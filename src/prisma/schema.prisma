@@ -14,30 +14,47 @@ datasource db {
 // }
 
 model ContactEnquiry {
-  id          String  @id @default(uuid())
-  firstName   String  @map("first_name")
-  lastName    String  @map("last_name")
+  id          String   @id @default(uuid())
+  firstName   String   @map("first_name")
+  lastName    String   @map("last_name")
   email       String
   mobile      String
-  companyName String  @map("company_name")
+  companyName String   @map("company_name")
   service     String
   message     String
-  source      String? @default("contact")
+  source      String?  @default("contact")
+  createdAt   DateTime @default(now()) @map("created_at")
 
   @@map("contact_enquiries")
 }
 
 model CarreerEnquiry {
-  id          String  @id @default(uuid())
-  firstName   String  @map("first_name")
-  lastName    String  @map("last_name")
+  id          String   @id @default(uuid())
+  firstName   String   @map("first_name")
+  lastName    String   @map("last_name")
   email       String
   mobile      String
   designation String
-  expInYears  String  @map("experience_in_years")
+  expInYears  String   @map("experience_in_years")
   jobTitle    String
   resumeUrl   String
   message     String?
+  createdAt   DateTime @default(now()) @map("created_at")
 
   @@map("carreer_enquiries")
+}
+
+model Otp {
+  id        String    @id @default(uuid())
+  mobile    String
+  otp       String
+  expiry    DateTime
+  createdAt DateTime  @default(now()) @map("created_at")
+  status    OtpStatus @default(GENRERATED)
+}
+
+enum OtpStatus {
+  GENRERATED 
+  VERIFIED
+  EXPIRED
 }

@@ -1,0 +1,17 @@
+-- AlterTable
+ALTER TABLE `carreer_enquiries` ADD COLUMN `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);
+
+-- AlterTable
+ALTER TABLE `contact_enquiries` ADD COLUMN `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);
+
+-- CreateTable
+CREATE TABLE `Otp` (
+    `id` VARCHAR(191) NOT NULL,
+    `mobile` VARCHAR(191) NOT NULL,
+    `otp` VARCHAR(191) NOT NULL,
+    `expiry` DATETIME(3) NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `status` ENUM('GENRERATED', 'VERIFIED', 'EXPIRED') NOT NULL DEFAULT 'GENRERATED',
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
