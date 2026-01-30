@@ -1,7 +1,5 @@
+import axios from "axios";
 import { errorHandler } from "./helper";
-
-const axios = require("axios");
-const env = require("../env");
 
 async function sendOtptoSMS(otp: string, ttl = 10, mbno: string) {
   try {
@@ -12,16 +10,16 @@ async function sendOtptoSMS(otp: string, ttl = 10, mbno: string) {
         {
           sms: message,
           mobiles: mbno,
-          senderid: env.SENDERID,
-          tempid: env.TEMPLATE_ID,
-          entityid: env.ENTITY_ID,
+          senderid: process.env.SENDERID,
+          tempid: process.env.TEMPLATE_ID,
+          entityid: process.env.ENTITY_ID,
           unicode: "0",
         },
       ],
     };
 
     const headers = {
-      key: env.API_KEY,
+      key: process.env.API_KEY,
       "Content-Type": "application/json",
     };
     const res = await axios.post(
