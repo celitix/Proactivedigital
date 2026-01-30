@@ -1,7 +1,7 @@
 import axios from "axios";
 import { errorHandler } from "./helper";
 
-async function sendOtptoSMS(otp: string, ttl = 10, mbno: string) {
+export async function sendOtptoSMS(otp: string, ttl = 10, mbno: string) {
   try {
     const message = `Your One Time Password for healthsquare.in is ${otp} valid for ${ttl} minutes. Do not share this with anyone.`;
 
@@ -34,6 +34,3 @@ async function sendOtptoSMS(otp: string, ttl = 10, mbno: string) {
   }
 }
 
-module.exports = {
-  sendOtptoSMS,
-};
