@@ -5,10 +5,12 @@
   "license": "ISC",
   "author": "arihant-jain",
   "main": "index.ts",
+  "type": "module",
   "scripts": {
     "start": "tsx --watch src/index.ts",
-    "build": "tsc",
-    "serve": "node dist/index.js"
+    "build1": "tsc",
+    "build": "prisma generate && tsup src/index.ts --format esm --clean --minify",
+    "serve": "nodemon dist/index.js"
   },
   "dependencies": {
     "@prisma/adapter-mariadb": "^7.2.0",
@@ -30,6 +32,7 @@
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.6",
-    "@types/morgan": "^1.9.10"
+    "@types/morgan": "^1.9.10",
+    "tsup": "^8.5.1"
   }
 }

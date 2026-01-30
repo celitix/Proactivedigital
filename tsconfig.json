@@ -6,8 +6,10 @@
     "lib": ["esnext"],
     "esModuleInterop": true,
     "module": "ESNext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "target": "ES2020"
   },
   "include": ["**/*.ts"],
   "exclude": ["node_modules"]
