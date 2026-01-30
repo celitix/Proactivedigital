@@ -1,14 +1,43 @@
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma"
+  output   = "../../generated/prisma"
 }
 
 datasource db {
   provider = "mysql"
 }
 
-model User {
-  id    String @id @default(uuid())
-  name  String
-  email String @unique
+// model User {
+//   id    String @id @default(uuid())
+//   name  String
+//   email String @unique
+// }
+
+model ContactEnquiry {
+  id          String  @id @default(uuid())
+  firstName   String  @map("first_name")
+  lastName    String  @map("last_name")
+  email       String
+  mobile      String
+  companyName String  @map("company_name")
+  service     String
+  message     String
+  source      String? @default("contact")
+
+  @@map("contact_enquiries")
+}
+
+model CarreerEnquiry {
+  id          String  @id @default(uuid())
+  firstName   String  @map("first_name")
+  lastName    String  @map("last_name")
+  email       String
+  mobile      String
+  designation String
+  expInYears  String  @map("experience_in_years")
+  jobTitle    String
+  resumeUrl   String
+  message     String?
+
+  @@map("carreer_enquiries")
 }
