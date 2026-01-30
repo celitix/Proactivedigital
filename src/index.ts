@@ -6,6 +6,7 @@ import type { Request, Response, NextFunction } from "express";
 
 //routes
 import authRoutes from "./routes/auth.router";
+import enquiryRoutes from "./routes/enquiry.router";
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/api/auth", authRoutes);
+app.use("/api/enquiry", enquiryRoutes);
 
 app.get("/", (req, res) => {
   return res.status(200).json({ message: "Welcome" });
