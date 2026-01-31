@@ -1,5 +1,6 @@
 import crypto from "crypto";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export function errorHandler(message: string, status: number = 500) {
   const error: any = new Error();
@@ -22,4 +23,13 @@ export async function hash(password: string, saltRounds: number = 10) {
 
 export async function verifyHash(password: string, storedHash: string) {
   return await bcrypt.compare(password, storedHash);
+}
+export async function generateToken(data: Object) {
+  const token = jwt.sign(data, process.env.JWT_SECRET as string, {
+    expiresIn: "1d",
+  });
+  return token;
+}
+export async function validateToken(token: string) {
+  return jwt.verify(token, process.env.JWT_SECRET as string);
 }
