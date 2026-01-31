@@ -55,7 +55,7 @@ model Otp {
 
 model Users {
   id        String   @id @default(uuid())
-  mobile    String
+  mobile    String   @unique
   name      String?
   createdAt DateTime @default(now()) @map("created_at")
 
