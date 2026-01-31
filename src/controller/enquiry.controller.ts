@@ -7,7 +7,7 @@ import {
 } from "../lib/helper";
 import { prisma } from "../lib/prisma";
 import { Request, Response, NextFunction } from "express";
-import { sendOtptoSMS } from "../lib/sendOtp";
+import { sendOtptoSMS, sendOtptoSMSProactive } from "../lib/sendOtp";
 
 const contact = async (req: Request, res: Response) => {
   try {
@@ -97,7 +97,7 @@ const sendOtp = async (req: Request, res: Response) => {
       },
     });
 
-    const isSend = await sendOtptoSMS(
+    const isSend = await sendOtptoSMSProactive(
       appEnv == "dev" ? "123456" : otp,
       5,
       mobile,
