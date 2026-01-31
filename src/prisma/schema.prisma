@@ -62,8 +62,41 @@ model Users {
   @@map("users")
 }
 
+model Blog {
+  id            String     @id @default(uuid())
+  title         String
+  slug          String
+  shortDesc     String
+  content       String     @db.Text
+  category      String
+  tags          String
+  publishedDate DateTime?
+  seoId         String
+  status        BlogStatus @default(DRAFT)
+  image         String
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  seo Seo @relation(fields: [seoId], references: [id], onDelete: Cascade)
+
+  @@map("blogs")
+}
+
+model Seo {
+  id          String @id @default(uuid())
+  title       String
+  description String
+  keywords    String
+  blogs       Blog[]
+}
+
 enum OtpStatus {
   GENRERATED
   VERIFIED
   EXPIRED
+}
+
+enum BlogStatus {
+  DRAFT
+  PUBLISHED
 }
