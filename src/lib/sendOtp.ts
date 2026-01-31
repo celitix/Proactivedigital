@@ -1,5 +1,4 @@
 import axios from "axios";
-import { errorHandler } from "./helper";
 
 export async function sendOtptoSMS(otp: string, ttl = 10, mbno: string) {
   try {
@@ -27,10 +26,14 @@ export async function sendOtptoSMS(otp: string, ttl = 10, mbno: string) {
       paylod,
       { headers },
     );
-    console.log(res.data);
+
+    const isSuccess = res?.data?.smslist?.sms?.status == "Success";
+
+    if (!isSuccess) {
+      return false;
+    }
     return true;
   } catch (e: any) {
-    errorHandler(e.message);
+    throw new Error(e.message);
   }
 }
-

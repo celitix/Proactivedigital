@@ -97,7 +97,11 @@ const sendOtp = async (req: Request, res: Response) => {
       },
     });
 
-    const isSend = await sendOtptoSMS(otp, 5, mobile);
+    const isSend = await sendOtptoSMS(
+      appEnv == "dev" ? "123456" : otp,
+      5,
+      mobile,
+    );
     if (!isSend)
       return responseHandler(
         res,
