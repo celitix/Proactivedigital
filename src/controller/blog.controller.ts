@@ -24,19 +24,28 @@ const create = async (req: Request, res: Response) => {
       );
     }
 
-    await prisma.blog.create({
-      data: {
-        title,
-        slug,
-        shortDesc,
-        content,
-        category,
-        tags,
-        publishedDate,
-        seo,
-        status,
-        image: req.file.path,
-      },
+    prisma.$transaction(async (tx) => {
+      const seoData = await tx.seo.create({
+        data: {
+          title: seo.title,
+          description: seo.desc,
+          keywords: seo.keywords,
+        },
+      });
+      await tx.blog.create({
+        data: {
+          title,
+          slug,
+          shortDesc,
+          content,
+          category,
+          tags,
+          publishedDate,
+          seoId: seoData.id,
+          status: status.toUpperCase(),
+          image: req.file!.path,
+        },
+      });
     });
     return responseHandler(
       res,

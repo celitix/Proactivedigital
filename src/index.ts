@@ -9,6 +9,7 @@ import cors from "cors";
 // import authRoutes from "./routes/auth.router";
 import enquiryRoutes from "./routes/enquiry.router";
 import otpRoutes from "./routes/otp.router";
+import blogRoutes from "./routes/blog.router";
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use(cors(corsConfig));
 // app.use("/api/auth", authRoutes);
 app.use("/api/enquiry", enquiryRoutes);
 app.use("/api/otp", otpRoutes);
+app.use("/api/blog", blogRoutes);
 
 app.get("/", (req, res) => {
   return res.status(200).json({ message: "Welcome" });

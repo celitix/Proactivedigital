@@ -1,0 +1,30 @@
+import express from "express";
+import { validateBody } from "../middleware/schemaValidator";
+import {
+  all,
+  byId,
+  create,
+  deleteB,
+  update,
+} from "../controller/blog.controller";
+import { blogCreate, blogUpdate } from "../schema/blog.schema";
+import { upload } from "../middleware/upload";
+
+const router = express.Router();
+
+router.get("/", (req, res) => {
+  return res.status(200).json({ message: "Auth routes" });
+});
+
+router.post(
+  "/create",
+  upload.single("image"),
+  validateBody(blogCreate),
+  create,
+);
+router.get("/", all);
+router.get("/:id", byId);
+router.put("/update", validateBody(blogUpdate), update);
+router.delete("/delete/:id", deleteB);
+
+export default router;
