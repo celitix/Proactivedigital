@@ -59,6 +59,33 @@ const create = async (req: Request, res: Response) => {
 
 const all = async (req: Request, res: Response) => {
   try {
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const orderBy = (req.query.orderBy as string) || "desc";
+    const type = (req.query.type as string) || "all";
+
+    let where = {};
+    if (type == "published") {
+      where = {
+        status: "PUBLISHED",
+      };
+    }
+
+    if (type == "draft") {
+      where = {
+        status: "DRAFT",
+      };
+    }
+
+    await prisma.blog.findMany({
+      where,
+      skip: (page - 1) * limit,
+      take: limit,
+      orderBy: {
+        createdAt: orderBy === "asc" ? "asc" : "desc",
+      },
+    });
+
     return responseHandler(
       res,
       { message: "Blogs fetched successfully", status: true },
