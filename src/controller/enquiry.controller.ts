@@ -1,6 +1,7 @@
 import {
   errorHandler,
   generateOtp,
+  generateToken,
   hash,
   responseHandler,
   verifyHash,
@@ -84,6 +85,21 @@ const career = async (req: Request, res: Response) => {
 const sendOtp = async (req: Request, res: Response) => {
   try {
     const { mobile } = req.body;
+    const type = req.body.type || "no-auth";
+
+    const isUserExist = await prisma.users.findUnique({
+      where: {
+        mobile,
+      },
+    });
+
+    if (type == "auth" && !isUserExist) {
+      return responseHandler(
+        res,
+        { message: "Invalid mobile number.", status: false },
+        400,
+      );
+    }
 
     const appEnv = process.env.APP_ENV;
     const otp = generateOtp();
@@ -102,6 +118,7 @@ const sendOtp = async (req: Request, res: Response) => {
       5,
       mobile,
     );
+
     if (!isSend)
       return responseHandler(
         res,
@@ -121,6 +138,8 @@ const sendOtp = async (req: Request, res: Response) => {
 const verifyOtp = async (req: Request, res: Response) => {
   try {
     const { mobile, otpId, otp } = req.body;
+    const type = req.body.type || "no-auth";
+
     const isOtpExist = await prisma.otp.findUnique({
       where: { id: otpId, mobile },
     });
@@ -152,9 +171,13 @@ const verifyOtp = async (req: Request, res: Response) => {
       );
     }
     await prisma.otp.deleteMany({ where: { id: otpId } });
+    let token = null;
+    if (type == "auth") {
+      token = generateToken({ mobile });
+    }
     return responseHandler(
       res,
-      { message: "Otp verified successfully", status: true },
+      { message: "Otp verified successfully", status: true, token },
       201,
     );
   } catch (e: any) {
