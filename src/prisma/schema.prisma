@@ -53,8 +53,17 @@ model Otp {
   status    OtpStatus @default(GENRERATED)
 }
 
+model Users {
+  id        String   @id @default(uuid())
+  mobile    String
+  name      String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("users")
+}
+
 enum OtpStatus {
-  GENRERATED 
+  GENRERATED
   VERIFIED
   EXPIRED
 }
