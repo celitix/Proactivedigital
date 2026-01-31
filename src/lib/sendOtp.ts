@@ -1,4 +1,5 @@
 import axios from "axios";
+import nodemailer from "nodemailer";
 
 export async function sendOtptoSMS(otp: string, ttl = 10, mbno: string) {
   try {
@@ -91,6 +92,92 @@ export async function sendOtptoSMSProactive(
       return false;
     }
     return true;
+  } catch (e: any) {
+    throw new Error(e.message);
+  }
+}
+
+export async function sendWhatsapp(data: any) {
+  try {
+    const payload = {
+      template: {
+        components: [
+          {
+            type: "BODY",
+            parameters: [
+              {
+                text: data?.name,
+                type: "text",
+              },
+              {
+                text: data?.service,
+                type: "text",
+              },
+            ],
+          },
+        ],
+        name: "thankyou",
+        language: {
+          code: "en",
+          policy: "deterministic",
+        },
+      },
+      to: `91${data.mbno}`,
+      type: "template",
+      messaging_product: "whatsapp",
+    };
+
+    const res = await axios.post(
+      "https://api.celitix.com/wrapper/waba/message",
+      payload,
+      {
+        headers: {
+          key: process.env.WHATSAPP_KEY,
+          "Content-Type": "application/json",
+          wabaNumber: process.env.WHATSAPP_NUMBER,
+        },
+      },
+    );
+
+    if (res?.data?.error?.type === "OAuthException") {
+      return false;
+    }
+
+    return true;
+  } catch (e: any) {
+    console.log(e);
+    throw new Error(e.message);
+  }
+}
+
+export async function sendMail(data: any) {
+  try {
+    const { name, email, phone, message, company, service } = data;
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.GMAIL_ID,
+        pass: process.env.GMAIL_PASSWORD,
+      },
+    });
+
+    var mailOptions = {};
+
+    mailOptions = {
+      from: "ads@proactivedigital.in",
+      to: "info@proactivedigital.in, sales@proactivesms.in, yogendra@proactivesms.in",
+      // to: "dummymail12hai@gmail.com",
+      subject: `Proative Digital ${data.source} Enquiry`,
+      html: `Name: ${name}<br>Email: ${email}<br>Phone: ${phone}<br>Message: ${message}<br>Company: ${company}<br>Service: ${service}`,
+    };
+
+    transporter.sendMail(mailOptions, function (error: any, info: any) {
+      if (error) {
+        return false;
+      } else {
+        return true;
+      }
+    });
   } catch (e: any) {
     throw new Error(e.message);
   }

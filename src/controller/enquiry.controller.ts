@@ -9,6 +9,7 @@ import {
 import { prisma } from "../lib/prisma";
 import { Request, Response, NextFunction } from "express";
 import {
+  sendMail,
   sendOtptoSMS,
   sendOtptoSMSProactive,
   sendWhatsapp,
@@ -44,6 +45,16 @@ const contact = async (req: Request, res: Response) => {
       name: `${firstName} ${lastName}`.trim(),
       service: service,
       mbno: mobile,
+    });
+
+    await sendMail({
+      name: `${firstName} ${lastName}`.trim(),
+      email,
+      phone: mobile,
+      message,
+      company: companyName,
+      service: service,
+      source,
     });
     return responseHandler(
       res,
