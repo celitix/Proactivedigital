@@ -77,8 +77,17 @@ const all = async (req: Request, res: Response) => {
       };
     }
 
-    await prisma.blog.findMany({
+    const blogs = await prisma.blog.findMany({
       where,
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        shortDesc: true,
+        category: true,
+        publishedDate: true,
+        image: true,
+      },
       skip: (page - 1) * limit,
       take: limit,
       orderBy: {
@@ -88,7 +97,7 @@ const all = async (req: Request, res: Response) => {
 
     return responseHandler(
       res,
-      { message: "Blogs fetched successfully", status: true },
+      { message: "Blogs fetched successfully", status: true, blogs },
       201,
     );
   } catch (e: any) {
@@ -98,9 +107,41 @@ const all = async (req: Request, res: Response) => {
 
 const byId = async (req: Request, res: Response) => {
   try {
+    const idParam = req.query.id;
+
+    const id = typeof idParam === "string" ? idParam : undefined;
+
+    if (!id) {
+      return responseHandler(
+        res,
+        { message: "Id is required", status: false },
+        400,
+      );
+    }
+
+    const isBlogExist = await prisma.blog.findUnique({
+      where: { id },
+      include: {
+        seo: {
+          select: {
+            title: true,
+            description: true,
+            keywords: true,
+          },
+        },
+      },
+    });
+
+    if (!isBlogExist) {
+      return responseHandler(
+        res,
+        { message: "Blog not found", status: false },
+        400,
+      );
+    }
     return responseHandler(
       res,
-      { message: "Blog fetched successfully", status: true },
+      { message: "Blog fetched successfully", status: true, blog: isBlogExist },
       201,
     );
   } catch (e: any) {
