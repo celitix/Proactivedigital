@@ -19,7 +19,6 @@ const carreerEnquiry = z.object({
   designation: z.string().min(1).max(100),
   expInYears: z.string().min(1).max(100),
   jobTitle: z.string().min(1).max(100),
-  resumeUrl: z.string().min(1).max(100),
   message: z.string().min(30).max(500).optional(),
 });
 

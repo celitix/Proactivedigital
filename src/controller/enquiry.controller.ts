@@ -8,7 +8,11 @@ import {
 } from "../lib/helper";
 import { prisma } from "../lib/prisma";
 import { Request, Response, NextFunction } from "express";
-import { sendOtptoSMS, sendOtptoSMSProactive } from "../lib/sendOtp";
+import {
+  sendOtptoSMS,
+  sendOtptoSMSProactive,
+  sendWhatsapp,
+} from "../lib/sendOtp";
 
 const contact = async (req: Request, res: Response) => {
   try {
@@ -35,12 +39,19 @@ const contact = async (req: Request, res: Response) => {
         source,
       },
     });
+
+    await sendWhatsapp({
+      name: `${firstName} ${lastName}`.trim(),
+      service: service,
+      mbno: mobile,
+    });
     return responseHandler(
       res,
       { message: "Enquiry created successfully", status: true },
       201,
     );
   } catch (e: any) {
+    console.log(e);
     errorHandler(e.message);
   }
 };
@@ -59,6 +70,16 @@ const career = async (req: Request, res: Response) => {
       message,
     } = req.body;
 
+    const file = req.file;
+
+    if (!file) {
+      return responseHandler(
+        res,
+        { message: "No file uploaded", status: false },
+        400,
+      );
+    }
+
     await prisma.carreerEnquiry.create({
       data: {
         firstName,
@@ -68,7 +89,7 @@ const career = async (req: Request, res: Response) => {
         designation,
         expInYears,
         jobTitle,
-        resumeUrl,
+        resumeUrl: file.path,
         message,
       },
     });
