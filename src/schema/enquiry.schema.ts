@@ -1,4 +1,4 @@
-import {  z } from "zod";
+import { z } from "zod";
 
 const contactEnquiry = z.object({
   firstName: z.string().min(1),
@@ -6,7 +6,7 @@ const contactEnquiry = z.object({
   email: z.email("Invalid email address"),
   mobile: z.string().min(10).max(10),
   companyName: z.string().min(1).max(100),
-  service: z.string().min(10).max(10),
+  service: z.string().min(10).max(100),
   message: z.string().min(30).max(500),
   source: z.enum(["contact", "book-demo"]).optional(),
 });

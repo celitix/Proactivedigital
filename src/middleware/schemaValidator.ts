@@ -13,6 +13,7 @@ export const validateBody =
           path: e.path.join("."),
           message: e.message,
         })),
+        status: false,
       });
     }
 
