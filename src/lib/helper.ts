@@ -33,3 +33,7 @@ export async function generateToken(data: Object) {
 export async function validateToken(token: string) {
   return jwt.verify(token, process.env.JWT_SECRET as string);
 }
+
+export async function decodeToken(token: string) {
+  return jwt.decode(token);
+}
