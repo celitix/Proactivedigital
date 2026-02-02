@@ -22,7 +22,7 @@ router.post(
 );
 router.get("/", all);
 router.get("/:id", byId);
-router.put("/update", validateBody(blogUpdate), update);
-router.delete("/delete/:id", deleteB);
+router.put("/update", checkIsAuth, validateBody(blogUpdate), update);
+router.delete("/delete/:id", checkIsAuth, deleteB);
 
 export default router;
