@@ -145,7 +145,6 @@ export async function sendWhatsapp(data: any) {
 
     return true;
   } catch (e: any) {
-    console.log(e);
     throw new Error(e.message);
   }
 }

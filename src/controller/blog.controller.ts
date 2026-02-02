@@ -179,6 +179,16 @@ const update = async (req: Request, res: Response) => {
   try {
     const { id, seo, ...rest } = req.body;
 
+    const isBlogExist = await prisma.blog.findUnique({ where: { id } });
+
+    if (!isBlogExist) {
+      return responseHandler(
+        res,
+        { message: "Blog not found", status: false },
+        400,
+      );
+    }
+
     const isUpdate = await prisma.$transaction(async (tx) => {
       if (req.body?.seo !== undefined && Object.keys(seo).length > 0) {
         const seoId = seo?.id;
@@ -226,13 +236,45 @@ const update = async (req: Request, res: Response) => {
       201,
     );
   } catch (e: any) {
-    console.log("e", e);
     errorHandler(e.message);
   }
 };
 
 const deleteB = async (req: Request, res: Response) => {
   try {
+    let { id } = req.params;
+
+    if (typeof id !== "string") {
+      return responseHandler(
+        res,
+        { message: "Blog id is required", status: false },
+        400,
+      );
+    }
+
+    const isBlogExist = await prisma.blog.findUnique({ where: { id } });
+
+    if (!isBlogExist) {
+      return responseHandler(
+        res,
+        { message: "Blog not found", status: false },
+        400,
+      );
+    }
+
+    const isDelete = await prisma.blog.delete({
+      where: {
+        id,
+      },
+    });
+
+    if (!isDelete) {
+      return responseHandler(
+        res,
+        { message: "Something went wrong", status: false },
+        400,
+      );
+    }
     return responseHandler(
       res,
       { message: "Blog deleted successfully", status: true },

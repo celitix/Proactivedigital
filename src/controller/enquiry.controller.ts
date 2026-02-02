@@ -62,7 +62,6 @@ const contact = async (req: Request, res: Response) => {
       201,
     );
   } catch (e: any) {
-    console.log(e);
     errorHandler(e.message);
   }
 };
