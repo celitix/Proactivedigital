@@ -65,7 +65,7 @@ model Users {
 model Blog {
   id            String     @id @default(uuid())
   title         String
-  slug          String
+  slug          String     @unique
   shortDesc     String
   content       String     @db.Text
   category      String
