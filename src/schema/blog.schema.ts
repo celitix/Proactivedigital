@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { describe } from "zod/v4/core";
 
 const blogCreate = z.object({
   title: z.string().min(1).max(100),
@@ -22,6 +23,17 @@ const blogCreate = z.object({
 
 const blogUpdate = blogCreate.partial().extend({
   id: z.uuid(),
+  seo: z.preprocess(
+    (val) => (typeof val === "string" ? JSON.parse(val) : val),
+    z
+      .object({
+        id: z.string(),
+        title: z.string().min(1).max(60),
+        description: z.string().min(1).max(160),
+        keywords: z.string().min(1).max(160),
+      })
+      .optional(),
+  ),
 });
 
 export { blogCreate, blogUpdate };
