@@ -1,6 +1,7 @@
 import { errorHandler, responseHandler } from "../lib/helper";
 import type { Request, Response } from "express";
 import { prisma } from "../lib/prisma";
+import { stat } from "node:fs";
 
 const create = async (req: Request, res: Response) => {
   try {
@@ -148,6 +149,7 @@ const byId = async (req: Request, res: Response) => {
       include: {
         seo: {
           select: {
+            id: true,
             title: true,
             description: true,
             keywords: true,
@@ -175,12 +177,56 @@ const byId = async (req: Request, res: Response) => {
 
 const update = async (req: Request, res: Response) => {
   try {
+    const { id, seo, ...rest } = req.body;
+
+    const isUpdate = await prisma.$transaction(async (tx) => {
+      if (req.body?.seo !== undefined && Object.keys(seo).length > 0) {
+        const seoId = seo?.id;
+        if (!seoId) {
+          return responseHandler(
+            res,
+            { message: "Seo id is required", status: false },
+            400,
+          );
+        }
+
+        await tx.seo.update({
+          where: {
+            id: seoId,
+          },
+          data: {
+            title: seo.title,
+            description: seo.description,
+            keywords: seo.keywords,
+          },
+        });
+      }
+
+      const isUpdate = await tx.blog.update({
+        where: {
+          id,
+        },
+        data: {
+          ...rest,
+          status: rest.status.toUpperCase(),
+        },
+      });
+      return isUpdate;
+    });
+    if (!isUpdate) {
+      return responseHandler(
+        res,
+        { message: "Something went wrong", status: false },
+        400,
+      );
+    }
     return responseHandler(
       res,
       { message: "Blog updated successfully", status: true },
       201,
     );
   } catch (e: any) {
+    console.log("e", e);
     errorHandler(e.message);
   }
 };
