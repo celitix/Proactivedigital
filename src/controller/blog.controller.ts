@@ -24,6 +24,16 @@ const create = async (req: Request, res: Response) => {
       );
     }
 
+    const isBlogExist = await prisma.blog.findUnique({ where: { slug } });
+
+    if (isBlogExist) {
+      return responseHandler(
+        res,
+        { message: "Blog already exist", status: false },
+        201,
+      );
+    }
+
     prisma.$transaction(async (tx) => {
       const seoData = await tx.seo.create({
         data: {
@@ -121,20 +131,20 @@ const all = async (req: Request, res: Response) => {
 
 const byId = async (req: Request, res: Response) => {
   try {
-    const idParam = req.query.id;
+    const idParam = req.params.id;
 
     const id = typeof idParam === "string" ? idParam : undefined;
 
     if (!id) {
       return responseHandler(
         res,
-        { message: "Id is required", status: false },
+        { message: "Slug is required", status: false },
         400,
       );
     }
 
     const isBlogExist = await prisma.blog.findUnique({
-      where: { id },
+      where: { slug: id },
       include: {
         seo: {
           select: {
