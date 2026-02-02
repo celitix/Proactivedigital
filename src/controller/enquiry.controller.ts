@@ -205,7 +205,7 @@ const verifyOtp = async (req: Request, res: Response) => {
     await prisma.otp.deleteMany({ where: { id: otpId } });
     let token = null;
     if (type == "auth") {
-      token = generateToken({ mobile });
+      token = await generateToken({ mobile });
     }
     return responseHandler(
       res,
