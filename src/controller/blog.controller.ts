@@ -95,9 +95,23 @@ const all = async (req: Request, res: Response) => {
       },
     });
 
+    const totalBlogLength = await prisma.blog.count({
+      where,
+    });
+
     return responseHandler(
       res,
-      { message: "Blogs fetched successfully", status: true, blogs },
+      {
+        message: "Blogs fetched successfully",
+        status: true,
+        blogs,
+        meta: {
+          total: totalBlogLength,
+          totalPages: Math.ceil(totalBlogLength / limit),
+          currentPage: page,
+          limit,
+        },
+      },
       201,
     );
   } catch (e: any) {
