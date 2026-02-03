@@ -67,7 +67,7 @@ model Blog {
   title         String
   slug          String     @unique
   shortDesc     String
-  content       String     @db.Text
+  content       String     @db.LongText
   category      String
   tags          String
   publishedDate DateTime?

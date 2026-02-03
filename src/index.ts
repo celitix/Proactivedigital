@@ -16,6 +16,8 @@ const app = express();
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use("/uploads", express.static("uploads"));
 const corsConfig = {
   origin: function (origin: any, callback: any) {
     const allowedOrigins = process.env.CORS?.split(",");

@@ -88,7 +88,7 @@ const all = async (req: Request, res: Response) => {
       };
     }
 
-    const blogs = await prisma.blog.findMany({
+    const recentBlogs = await prisma.blog.findMany({
       where,
       select: {
         id: true,
@@ -98,6 +98,30 @@ const all = async (req: Request, res: Response) => {
         category: true,
         publishedDate: true,
         image: true,
+        status: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 1,
+    });
+
+    const blogs = await prisma.blog.findMany({
+      where: {
+        ...where,
+        NOT: {
+          id: recentBlogs[0]?.id,
+        },
+      },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        shortDesc: true,
+        category: true,
+        publishedDate: true,
+        image: true,
+        status: true,
       },
       skip: (page - 1) * limit,
       take: limit,
@@ -116,6 +140,7 @@ const all = async (req: Request, res: Response) => {
         message: "Blogs fetched successfully",
         status: true,
         blogs,
+        recentBlogs,
         meta: {
           total: totalBlogLength,
           totalPages: Math.ceil(totalBlogLength / limit),
