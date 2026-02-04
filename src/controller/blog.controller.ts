@@ -109,13 +109,15 @@ const all = async (req: Request, res: Response) => {
 
     let whereNot = {};
 
-    if (role == "admin") {
+    if (role !== "admin") {
       whereNot = {
         NOT: {
           id: recentBlogs[0]?.id,
         },
       };
     }
+
+    console.log("role", role);
 
     const blogs = await prisma.blog.findMany({
       where: {
