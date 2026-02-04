@@ -74,6 +74,7 @@ const all = async (req: Request, res: Response) => {
     const limit = parseInt(req.query.limit as string) || 10;
     const orderBy = (req.query.orderBy as string) || "desc";
     const type = (req.query.type as string) || "all";
+    const role = (req.query.role as string) || "non-admin";
 
     let where = {};
     if (type == "published") {
@@ -106,12 +107,20 @@ const all = async (req: Request, res: Response) => {
       take: 1,
     });
 
-    const blogs = await prisma.blog.findMany({
-      where: {
-        ...where,
+    let whereNot = {};
+
+    if (role == "admin") {
+      whereNot = {
         NOT: {
           id: recentBlogs[0]?.id,
         },
+      };
+    }
+
+    const blogs = await prisma.blog.findMany({
+      where: {
+        ...where,
+        ...whereNot,
       },
       select: {
         id: true,
