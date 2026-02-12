@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import morgan from "morgan";
 import "dotenv/config";
 import type { Request, Response, NextFunction } from "express";
+import rateLimit from "express-rate-limit";
 import cors from "cors";
 
 //routes
@@ -33,9 +34,21 @@ const corsConfig = {
 };
 app.use(cors(corsConfig));
 
+const loginLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 5,
+  message: {
+    status: 429,
+    error: "Too many requests. Please try again in 10 minutes.",
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  statusCode: 429,
+});
+
 // app.use("/api/auth", authRoutes);
 app.use("/api/enquiry", enquiryRoutes);
-app.use("/api/otp", otpRoutes);
+app.use("/api/otp", loginLimiter, otpRoutes);
 app.use("/api/blog", blogRoutes);
 
 app.get("/", (req, res) => {
