@@ -90,6 +90,20 @@ model Seo {
   blogs       Blog[]
 }
 
+model Job {
+  id               String    @id @default(uuid())
+  title            String
+  location         String
+  type             String
+  jobDesc          String    @db.LongText
+  responsibilities String    @db.LongText
+  qualifications   String    @db.LongText
+  status           JobStatus @default(DRAFT)
+  createdAt        DateTime  @default(now()) @map("created_at")
+
+  @@map("jobs")
+}
+
 enum OtpStatus {
   GENRERATED
   VERIFIED
@@ -97,6 +111,11 @@ enum OtpStatus {
 }
 
 enum BlogStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum JobStatus {
   DRAFT
   PUBLISHED
 }
