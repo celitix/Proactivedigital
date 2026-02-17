@@ -11,7 +11,7 @@ const router = express.Router();
 router.post("/create", checkIsAuth, validateBody(createJobSchema), create);
 router.get("/", checkIsAuth, getAllJobs);
 router.patch(
-  "/:id",
+  "/update",
   checkIsAuth,
   validateBody(updateJobSchema),
   updateJobStatus,

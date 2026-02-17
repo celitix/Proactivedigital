@@ -71,8 +71,7 @@ const getAllJobs = async (req: Request, res: Response) => {
 
 const updateJobStatus = async (req: Request, res: Response) => {
   try {
-    const id = req.params.id as string;
-
+    const { id, status } = req.body;
     const isJobExist = await prisma.job.findUnique({ where: { id } });
 
     if (!isJobExist)
@@ -84,7 +83,7 @@ const updateJobStatus = async (req: Request, res: Response) => {
 
     const isJobUpdate = await prisma.job.update({
       where: { id },
-      data: { status: req.body.status },
+      data: { status: status },
     });
 
     if (!isJobUpdate)

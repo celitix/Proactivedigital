@@ -7,7 +7,7 @@ const createJobSchema = z.object({
   jobDesc: z.string().min(1),
   responsibilities: z.string().min(1),
   qualifications: z.string().min(1),
-  status: z.enum(["draft", "published"]).default("draft"),
+  status: z.enum(["DRAFT", "PUBLISHED"]).default("DRAFT"),
 });
 
 const updateJobSchema = createJobSchema.partial().extend({
