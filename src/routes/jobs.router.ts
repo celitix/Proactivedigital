@@ -9,7 +9,7 @@ import {
 } from "../controller/job.controller";
 const router = express.Router();
 router.post("/create", checkIsAuth, validateBody(createJobSchema), create);
-router.get("/", checkIsAuth, getAllJobs);
+router.get("/", getAllJobs);
 router.patch(
   "/update",
   checkIsAuth,
